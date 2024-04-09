@@ -5,9 +5,10 @@ import argparse
 
 
 
-# Simple port Scanner
+# Um simples scan de portas
 def scan_port(target, port, open_ports, lock):
     try:
+        # Usa AF_INET para IPv4 e SOCK_STREAM para TCP/IP validando através do handshake SYN/ACK
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(1)
             s.connect((target, port))
@@ -17,10 +18,10 @@ def scan_port(target, port, open_ports, lock):
                 print(f"[+] {port} Open!")
 
     except (socket.timeout, ConnectionRefusedError):
-        pass  # Close Ports
+        pass  # Porta fechada
 
 
-# Threads to be fast
+# Threads para otimizar
 def scan_ports_with_threads(target, init_port, end_port):
     open_ports = []
     lock = threading.Lock()
@@ -45,9 +46,11 @@ def main():
     args = parser.parse_args()
     target = args.target
     all_ports = args.all
+    # Scan de todas as portas TCP/IP
     if all_ports:
         init_port = 1
         end_port = 65535
+    # Apenas as mais comuns
     else:
         init_port = 1
         end_port = 1024
@@ -56,6 +59,7 @@ def main():
     try:
         ports = scan_ports_with_threads(target, init_port, end_port)
     except Exception as e:
+        # Tratamento de erros
         print(e)
         
 
